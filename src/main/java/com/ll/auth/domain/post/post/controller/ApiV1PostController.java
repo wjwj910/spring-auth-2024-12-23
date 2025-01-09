@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -27,17 +28,15 @@ public class ApiV1PostController {
 
     private Member checkAuthentication() {
         String credentials = request.getHeader("Authorization");
-        credentials = credentials.substring("Bearer ".length());
-        String[] credentialsBits = credentials.split("/", 2);
-        long actorId = Long.parseLong(credentialsBits[0]);
-        String actorPassword = credentialsBits[1];
 
-        Member actor = memberService.findById(actorId).get();
+        String password2 = credentials.substring("Bearer ".length());
 
-        if (!actor.getPassword2().equals(actorPassword))
+        Optional<Member> opActor = memberService.findByPassword2(password2);
+
+        if (opActor.isEmpty())
             throw new ServiceException("401-1", "비밀번호가 일치하지 않습니다.");
 
-        return actor;
+        return opActor.get();
     }
 
     @GetMapping
