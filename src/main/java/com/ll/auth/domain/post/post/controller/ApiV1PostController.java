@@ -54,7 +54,7 @@ public class ApiV1PostController {
 
     @DeleteMapping("/{id}")
     public RsData<Void> deleteItem(@PathVariable long id,
-                                   @RequestHeader String credentials) {
+                                   @RequestHeader("Authorization") String credentials) {
         Member actor = checkAuthentication(credentials);
 
         Post post = postService.findById(id).get();
@@ -85,7 +85,7 @@ public class ApiV1PostController {
     @Transactional
     public RsData<PostDto> modifyItem(@PathVariable long id,
                                       @RequestBody @Valid PostModifyReqBody reqBody,
-                                      @RequestHeader String credentials) {
+                                      @RequestHeader("Authorization") String credentials) {
         Member actor = checkAuthentication(credentials);
 
         Post post = postService.findById(id).get();
@@ -114,7 +114,7 @@ public class ApiV1PostController {
     @PostMapping
     public RsData<PostDto> writeItem(
             @RequestBody @Valid PostWriteReqBody reqBody,
-            @RequestHeader String credentials
+            @RequestHeader("Authorization") String credentials
     ) {
         Member actor = checkAuthentication(credentials);
 
